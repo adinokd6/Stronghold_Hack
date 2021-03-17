@@ -92,7 +92,7 @@ std::vector <uintptr_t> cEngine::Find_DMA_Address(HANDLE hProc, uintptr_t ptr, u
 	return addr;
 }
 
-int * cEngine::value_return(int category)
+std::vector <int> cEngine::value_return(int category)
 {
 	
 	return read_from_process(category);
@@ -132,22 +132,23 @@ void cEngine::save_to_process(int new_value, uintptr_t address)
 	WriteProcessMemory(hProcess, (BYTE*)tmp_addr, &new_value, sizeof(new_value), nullptr);
 }
 
-int * cEngine::read_from_process(int category)
+std::vector<int> cEngine::read_from_process(int category)
 {
 	if (category == GRANARY)
 	{
-		int tmp_tab[7];
-		for (int i = 0;i < 8;i++)
+		std::vector <int> tmp_tab = {0,0,0,0,0,0,0};
+		for (int i = 0;i < 7;i++)
 		{
 			uintptr_t tmp_addr = moduleBase + GranaryOffsets[i];
 			ReadProcessMemory(hProcess, (BYTE*)tmp_addr, &tmp_tab[i], sizeof(tmp_tab[i]), nullptr);
 		}
+		
 		return tmp_tab;
 
 	}
 	else if (category == ARMOURY)
 	{
-		int tmp_tab[8];
+		std::vector <int> tmp_tab = {0,0,0,0,0,0,0,0};
 		for (int i = 0;i < 8;i++)
 		{
 			uintptr_t tmp_addr = moduleBase + ArmouryOffsets[i];
@@ -158,7 +159,7 @@ int * cEngine::read_from_process(int category)
 	}
 	else
 	{
-		int tmp_tab[5];
+		std::vector <int> tmp_tab = { 0,0,0,0,0 };
 		for (int i = 0;i < 5;i++)
 		{
 			uintptr_t tmp_addr = moduleBase + StockPileOffsets[i];
