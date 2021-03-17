@@ -41,22 +41,13 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 
 	typing_fields = new wxTextCtrl*[numbers_of_fields];
 	actual_value = new wxStaticText*[numbers_of_fields];
 
-	std::string s;
 
 	for (int i = 0;i < numbers_of_fields;i++)
 	{
-		s.append("Granary");
-		s.append("\\");
-		s.append(std::to_string(i + 1));
-		s.append(".png");
-
 		typing_fields[i] = new wxTextCtrl(this, wxID_ANY, "", wxPoint(120, 87+i*54), wxSize(50, 20));
 		actual_value[i] = new wxStaticText(this, wxID_ANY, "1500", wxPoint(70, 87 + i * 54), wxSize(50, 20));
 
-		pictures[i] = new wxStaticBitmap(this, wxID_ANY, wxBitmap(s, wxBITMAP_TYPE_PNG), wxPoint(12, 70 + i * 54), wxSize(48, 48));
-		pictures[i]->Refresh();
-		s.clear();
-
+		pictures[i] = new wxStaticBitmap(this, wxID_ANY, wxBitmap("Granary\\"+ std::to_string(i + 1) + ".png", wxBITMAP_TYPE_PNG), wxPoint(12, 70 + i * 54), wxSize(48, 48));
 	}
 	
 
@@ -66,7 +57,7 @@ cMain::~cMain()
 {
 	delete[]typing_fields;
 	delete[]actual_value;
-	//delete[]pictures;
+	delete[]pictures;
 }
 
 
@@ -104,6 +95,7 @@ void cMain::Load_Images(std::string name,int number)
 
 void cMain::OnArmoury(wxCommandEvent& event)
 {
+	actual_category = Armoury;
 	std::string s;
 	for (int i = 0;i < numbers_of_fields;i++)
 	{
@@ -119,6 +111,7 @@ void cMain::OnArmoury(wxCommandEvent& event)
 
 void cMain::OnStockpile(wxCommandEvent& event)
 {
+	actual_category = Stockpile;
 	for (int i = 0;i < numbers_of_fields;i++)
 	{
 		std::string s;
@@ -142,6 +135,8 @@ void cMain::OnStockpile(wxCommandEvent& event)
 
 void cMain::OnGranary(wxCommandEvent& event)
 {
+	actual_category = Granary;
+
 	std::string s;
 
 	for (int i = 0;i < numbers_of_fields;i++)

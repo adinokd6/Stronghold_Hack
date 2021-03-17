@@ -4,6 +4,11 @@
 
 #include <string>
 
+#define Granary 1;
+#define Armoury 2;
+#define Stockpile 3;
+
+
 
 
 class cMain : public wxFrame
@@ -26,6 +31,8 @@ public:
 	wxDECLARE_EVENT_TABLE();
 private:
 	int numbers_of_fields = 7;
+	int current_value;
+	int actual_category = Granary;
 	wxButton *hack_button = nullptr;
 	wxTextCtrl **typing_fields;
 	wxStaticText **actual_value;
