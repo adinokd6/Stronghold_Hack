@@ -1,6 +1,7 @@
 #pragma once
 
 #include "wx/wx.h"
+
 #include <string>
 
 
@@ -17,21 +18,21 @@ public:
 	void OnArmoury(wxCommandEvent& event);
 	void OnStockpile(wxCommandEvent& event);
 	void OnGranary(wxCommandEvent& event);
+	void OnHack(wxCommandEvent& event);
 
-	void Create_Bar();
-	void Create_Menu();
-	
+	void Load_Images(std::string name,int number);
 
 
 	wxDECLARE_EVENT_TABLE();
 private:
-	int numbers_of_fields = 8;
+	int numbers_of_fields = 7;
 	wxButton *hack_button = nullptr;
 	wxTextCtrl **typing_fields;
 	wxStaticText **actual_value;
 	wxMenu *menuFile;
 	wxMenuBar* menuBar;
 	wxMenuItem* quit;
-	wxImage **pictures;
+	wxStaticBitmap**pictures= new wxStaticBitmap * [numbers_of_fields];;
+	
 };
 
