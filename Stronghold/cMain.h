@@ -3,10 +3,11 @@
 #include "wx/wx.h"
 
 #include <string>
+#include "cEngine.h"
 
-#define Granary 1;
-#define Armoury 2;
-#define Stockpile 3;
+#define Granary 1
+#define Armoury 2
+#define Stockpile 3
 
 
 
@@ -16,7 +17,6 @@ class cMain : public wxFrame
 public: 
 	cMain();
 	~cMain();
-	void OnButtonClicked(wxCommandEvent& evnt);
 	void OnExit(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
 
@@ -30,6 +30,7 @@ public:
 
 	wxDECLARE_EVENT_TABLE();
 private:
+	cEngine hack_Engine;
 	int numbers_of_fields = 7;
 	int current_value;
 	int actual_category = Granary;

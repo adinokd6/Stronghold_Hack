@@ -1,14 +1,16 @@
 #include "cEngine.h"
 
-
+#define GRANARY 1
+#define ARMOURY 2
+#define STOCKPILE 3
 
 
 cEngine::cEngine()
 {
-	procId = Get_Process_Id(procName);
-	moduleBase = Get_Module_Address(modName);
+	ProcId = Get_Process_Id(procName);
+	moduleBase = Get_Module_Address(ProcId,modName);
 
-	hProcess = OpenProcess(PROCESS_ALL_ACCESS, NULL, procId);
+	hProcess = OpenProcess(PROCESS_ALL_ACCESS, NULL, ProcId);
 
 	dynamicPtrBaseAddr = moduleBase;
 }
@@ -74,28 +76,100 @@ uintptr_t cEngine::Get_Module_Address(DWORD procId, const wchar_t* modName)
 	return modBaseAddr;
 }
 
-uintptr_t cEngine::Find_DMA_Address(HANDLE hProc, uintptr_t ptr, std::vector<unsigned int> offsets)
+std::vector <uintptr_t> cEngine::Find_DMA_Address(HANDLE hProc, uintptr_t ptr, unsigned int offsets[],int size)
 {
-	uintptr_t addr = ptr;
-	for (unsigned int i = 0;i < offsets.size();++i)
+	std::vector <uintptr_t> addr;
+	uintptr_t tmp_addr;
+
+	for (unsigned int i = 0;i < size;++i)
 	{
-		ReadProcessMemory(hProc, (BYTE*)addr, &addr, sizeof(uintptr_t), 0);
+		ReadProcessMemory(hProc, (BYTE*)tmp_addr, &tmp_addr, sizeof(uintptr_t), 0);
+
+		addr.push_back(tmp_addr);
 	}
 
 
 	return addr;
 }
 
-int cEngine::value_return(std::string name_of_category)
+int * cEngine::value_return(int category)
 {
-	int item_Value[7] = {1,2,3,4,5,6,7};
-	ReadProcessMemory(hProcess, (BYTE*)item_Addr, &item_Value[i], sizeof(item_Value[i]), nullptr);
+	
+	return read_from_process(category);
 
-
-	return 0;
 }
 
-void cEngine::hack_value(int tab[])
+
+void cEngine::hack_value(unsigned int tab_addresses[], int category,int new_values[])
 {
-	WriteProcessMemory(hProcess, (BYTE*)ammoAddr, &newAmmo, sizeof(newAmmo), nullptr);
+	if (category == GRANARY)
+	{
+		for (int i = 0;i < 7;i++)
+		{
+			save_to_process(new_values[i], tab_addresses[i]);
+		}
+	}
+	else if (category == STOCKPILE)
+	{
+		for (int i = 0;i < 8;i++)
+		{
+			save_to_process(new_values[i], tab_addresses[i]);
+		}
+	}
+	else
+	{
+		for (int i = 0;i < 5;i++)
+		{
+			save_to_process(new_values[i], tab_addresses[i]);
+		}
+	}
+	
 }
+
+void cEngine::save_to_process(int new_value, uintptr_t address)
+{
+	uintptr_t tmp_addr = address + moduleBase;
+	WriteProcessMemory(hProcess, (BYTE*)tmp_addr, &new_value, sizeof(new_value), nullptr);
+}
+
+int * cEngine::read_from_process(int category)
+{
+	if (category == GRANARY)
+	{
+		int tmp_tab[7];
+		for (int i = 0;i < 8;i++)
+		{
+			uintptr_t tmp_addr = moduleBase + GranaryOffsets[i];
+			ReadProcessMemory(hProcess, (BYTE*)tmp_addr, &tmp_tab[i], sizeof(tmp_tab[i]), nullptr);
+		}
+		return tmp_tab;
+
+	}
+	else if (category == ARMOURY)
+	{
+		int tmp_tab[8];
+		for (int i = 0;i < 8;i++)
+		{
+			uintptr_t tmp_addr = moduleBase + ArmouryOffsets[i];
+			ReadProcessMemory(hProcess, (BYTE*)tmp_addr, &tmp_tab[i], sizeof(tmp_tab[i]), nullptr);
+		}
+		return tmp_tab;
+
+	}
+	else
+	{
+		int tmp_tab[5];
+		for (int i = 0;i < 5;i++)
+		{
+			uintptr_t tmp_addr = moduleBase + StockPileOffsets[i];
+			ReadProcessMemory(hProcess, (BYTE*)tmp_addr, &tmp_tab[i], sizeof(tmp_tab[i]), nullptr);
+		}
+		return tmp_tab;
+	}
+
+	
+
+}
+
+
+

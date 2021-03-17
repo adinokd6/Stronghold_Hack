@@ -61,11 +61,6 @@ cMain::~cMain()
 }
 
 
-void cMain::OnButtonClicked(wxCommandEvent& evnt)
-{
-	
-}
-
 void cMain::OnExit(wxCommandEvent& event)
 {
 	Close(true);
