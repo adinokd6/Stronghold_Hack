@@ -5,8 +5,8 @@
 #include <string>
 #include "cEngine.h"
 
+#define Armoury 0
 #define Granary 1
-#define Armoury 2
 #define Stockpile 3
 
 
@@ -31,9 +31,9 @@ public:
 	wxDECLARE_EVENT_TABLE();
 private:
 	cEngine hack_Engine;
-	int numbers_of_fields = 7;
+	int numbers_of_fields = 8;
 	int current_value;
-	int actual_category = Granary;
+	int actual_category;
 	wxButton *hack_button = nullptr;
 	wxTextCtrl **typing_fields;
 	wxStaticText **actual_value;

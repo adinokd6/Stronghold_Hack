@@ -1,20 +1,19 @@
 #include "cMain.h"
 #include <string>
 
-
-//wxMessageBox();
-
-
+#define Armoury 0
+#define Granary 1
+#define Stockpile 3
 
 wxBEGIN_EVENT_TABLE(cMain, wxFrame)
 EVT_MENU(10001, cMain::OnGranary)
 EVT_MENU(10002,cMain::OnStockpile)
 EVT_MENU(10003,cMain::OnArmoury)
-EVT_MENU(10004,cMain::OnHack)
+EVT_BUTTON(10004,cMain::OnHack)
 wxEND_EVENT_TABLE()
 
 
-cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 30), wxSize(325, 520), (wxDEFAULT_FRAME_STYLE & ~wxRESIZE_BORDER & ~wxMAXIMIZE_BOX))
+cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 30), wxSize(325, 570), (wxDEFAULT_FRAME_STYLE & ~wxRESIZE_BORDER & ~wxMAXIMIZE_BOX))
 {
 
 	menuFile = new wxMenu;
@@ -43,17 +42,31 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 
 
 	std::string tmp_string;
 
-	std::vector<int> tmp_values=hack_Engine.read_from_process(Granary);
+	std::vector<int> tmp_values=hack_Engine.value_return(Granary);
 
-
+	actual_category = Granary;
 
 	for (int i = 0;i < numbers_of_fields;i++)
 	{
-		tmp_string = std::to_string(tmp_values[i]);
-		typing_fields[i] = new wxTextCtrl(this, wxID_ANY, "", wxPoint(120, 87+i*54), wxSize(50, 20));
-		actual_value[i] = new wxStaticText(this, wxID_ANY, tmp_string, wxPoint(70, 87 + i * 54), wxSize(50, 20));
+		if (i == 7)
+		{
+			typing_fields[i] = new wxTextCtrl(this, wxID_ANY, "", wxPoint(120, 87 + i * 54), wxSize(50, 20));
+			actual_value[i] = new wxStaticText(this, wxID_ANY, tmp_string, wxPoint(70, 87 + i * 54), wxSize(50, 20));
+			pictures[i] = new wxStaticBitmap(this, wxID_ANY, wxBitmap("Armoury\\" + std::to_string(i + 1) + ".png", wxBITMAP_TYPE_PNG), wxPoint(12, 70 + i * 54), wxSize(48, 48));
 
-		pictures[i] = new wxStaticBitmap(this, wxID_ANY, wxBitmap("Granary\\"+ std::to_string(i + 1) + ".png", wxBITMAP_TYPE_PNG), wxPoint(12, 70 + i * 54), wxSize(48, 48));
+			pictures[i]->Hide();
+			typing_fields[i]->Hide();
+			actual_value[i]->Hide();
+		}
+		else
+		{
+			tmp_string = std::to_string(tmp_values[i]);
+			typing_fields[i] = new wxTextCtrl(this, wxID_ANY, "", wxPoint(120, 87 + i * 54), wxSize(50, 20));
+			actual_value[i] = new wxStaticText(this, wxID_ANY, tmp_string, wxPoint(70, 87 + i * 54), wxSize(50, 20));
+			pictures[i] = new wxStaticBitmap(this, wxID_ANY, wxBitmap("Granary\\" + std::to_string(i + 1) + ".png", wxBITMAP_TYPE_PNG), wxPoint(12, 70 + i * 54), wxSize(48, 48));
+
+		}
+
 	}
 	
 
@@ -80,6 +93,21 @@ void cMain::OnAbout(wxCommandEvent& event)
 
 void cMain::OnHack(wxCommandEvent& event)
 {
+	std::string arr_of_values[8] = {};
+
+	for(int i = 0;i < numbers_of_fields;i++)
+	{
+		if ( (typing_fields[i]->IsEmpty()) == true)
+		{
+			arr_of_values[i] = "null";
+		}
+		else
+		{
+			arr_of_values[i] = typing_fields[i]->GetValue();
+		}
+	}
+
+	hack_Engine.hack_value(actual_category, arr_of_values);
 
 }
 
@@ -98,10 +126,11 @@ void cMain::OnArmoury(wxCommandEvent& event)
 {
 	actual_category = Armoury;
 	std::string s;
-	std::vector<int> tmp_values = hack_Engine.read_from_process(Armoury);
-	for (int i = 0;i < 8;i++)
+
+	std::vector<int> tmp_values = hack_Engine.value_return(Armoury);
+
+	for (int i = 0;i < numbers_of_fields;i++)
 	{
-		
 		s=std::to_string(tmp_values[i]);
 
 		actual_value[i]->SetLabel(s);
@@ -115,18 +144,19 @@ void cMain::OnArmoury(wxCommandEvent& event)
 void cMain::OnStockpile(wxCommandEvent& event)
 {
 	actual_category = Stockpile;
-	std::vector<int> tmp_values = hack_Engine.read_from_process(Stockpile);
+	std::string s;
 
-	for (int i = 0;i < 5;i++)
+	std::vector<int> tmp_values = hack_Engine.value_return(Stockpile);
+
+	for (int i = 0;i < numbers_of_fields;i++)
 	{
-		std::string s;
-		s = std::to_string(tmp_values[i]);
-		
 		typing_fields[i]->Clear();
-		actual_value[i]->SetLabel(s);
+		
 		if (i < 5)
 		{
+			s = std::to_string(tmp_values[i]);
 			Load_Images("Stockpile", i);
+			actual_value[i]->SetLabel(s);
 		}
 		else
 		{
@@ -143,16 +173,26 @@ void cMain::OnGranary(wxCommandEvent& event)
 	actual_category = Granary;
 
 	std::string s;
+	std::vector<int> tmp_values = hack_Engine.value_return(Granary);
 
 	for (int i = 0;i < numbers_of_fields;i++)
 	{
-		
-		s = std::to_string(i *45);
+		if (i == 7)
+		{
+			typing_fields[i]->Hide();
+			actual_value[i]->Hide();
+			pictures[i]->Hide();
+		}
+		else
+		{
+			s = std::to_string(tmp_values[i]);
 
-		typing_fields[i]->Clear();
-		actual_value[i]->SetLabel(s);
+			typing_fields[i]->Clear();
+			actual_value[i]->SetLabel(s);
 
-		Load_Images("Granary", i);
+			Load_Images("Granary", i);
+		}
+
 	}
 }
 

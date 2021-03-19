@@ -1,18 +1,18 @@
 #include "cEngine.h"
 
+#define ARMOURY 0
 #define GRANARY 1
-#define ARMOURY 2
 #define STOCKPILE 3
 
 
 cEngine::cEngine()
 {
 	ProcId = Get_Process_Id(procName);
+
 	moduleBase = Get_Module_Address(ProcId,modName);
+	dynamicPtrBaseAddr = moduleBase;
 
 	hProcess = OpenProcess(PROCESS_ALL_ACCESS, NULL, ProcId);
-
-	dynamicPtrBaseAddr = moduleBase;
 }
 
 cEngine::~cEngine()
@@ -88,89 +88,82 @@ std::vector <uintptr_t> cEngine::Find_DMA_Address(HANDLE hProc, uintptr_t ptr, u
 		addr.push_back(tmp_addr);
 	}
 
-
 	return addr;
 }
 
 std::vector <int> cEngine::value_return(int category)
 {
-	
-	return read_from_process(category);
+	std::vector <int> tmp_arr_of_values;
 
-}
+	std::vector<unsigned int> tmp_offsets;
 
-
-void cEngine::hack_value(unsigned int tab_addresses[], int category,int new_values[])
-{
 	if (category == GRANARY)
 	{
-		for (int i = 0;i < 7;i++)
-		{
-			save_to_process(new_values[i], tab_addresses[i]);
-		}
-	}
-	else if (category == STOCKPILE)
-	{
-		for (int i = 0;i < 8;i++)
-		{
-			save_to_process(new_values[i], tab_addresses[i]);
-		}
-	}
-	else
-	{
-		for (int i = 0;i < 5;i++)
-		{
-			save_to_process(new_values[i], tab_addresses[i]);
-		}
-	}
-	
-}
-
-void cEngine::save_to_process(int new_value, uintptr_t address)
-{
-	uintptr_t tmp_addr = address + moduleBase;
-	WriteProcessMemory(hProcess, (BYTE*)tmp_addr, &new_value, sizeof(new_value), nullptr);
-}
-
-std::vector<int> cEngine::read_from_process(int category)
-{
-	if (category == GRANARY)
-	{
-		std::vector <int> tmp_tab = {0,0,0,0,0,0,0};
-		for (int i = 0;i < 7;i++)
-		{
-			uintptr_t tmp_addr = moduleBase + GranaryOffsets[i];
-			ReadProcessMemory(hProcess, (BYTE*)tmp_addr, &tmp_tab[i], sizeof(tmp_tab[i]), nullptr);
-		}
-		
-		return tmp_tab;
-
+		tmp_offsets = GranaryOffsets;
 	}
 	else if (category == ARMOURY)
 	{
-		std::vector <int> tmp_tab = {0,0,0,0,0,0,0,0};
-		for (int i = 0;i < 8;i++)
-		{
-			uintptr_t tmp_addr = moduleBase + ArmouryOffsets[i];
-			ReadProcessMemory(hProcess, (BYTE*)tmp_addr, &tmp_tab[i], sizeof(tmp_tab[i]), nullptr);
-		}
-		return tmp_tab;
+		tmp_offsets = ArmouryOffsets;
+	}
+	else
+	{
+		tmp_offsets = StockPileOffsets;
+	}
+
+	for (int i = 0;i < number_of_fields - category;i++)
+	{
+		read_from_process(tmp_offsets[i], tmp_arr_of_values);
+	}
+
+	return tmp_arr_of_values;
+}
+
+
+void cEngine::read_from_process(unsigned int Offset,std::vector<int>& arr_of_values)
+{
+	uintptr_t tmp_addr = moduleBase + Offset;
+	int readed_value = 0;
+	ReadProcessMemory(hProcess, (BYTE*)tmp_addr, &readed_value, sizeof(readed_value), nullptr);
+	arr_of_values.push_back(readed_value);
+}
+
+void cEngine::hack_value(int category, std::string new_values[])
+{
+	std::vector<unsigned int> tmp_offsets;
+
+	if (category == GRANARY)
+	{
+		tmp_offsets = GranaryOffsets;
+	}
+	else if (category == ARMOURY)
+	{
+		tmp_offsets = ArmouryOffsets;
+	}
+	else
+	{
+		tmp_offsets = StockPileOffsets;
+	}
+
+	for (int i = 0;i < number_of_fields - category;i++)
+	{
+		save_to_process(new_values[i],tmp_offsets[i]);
+	}
+}
+
+void cEngine::save_to_process(std::string new_value, unsigned int address)
+{
+	if (new_value == "null")
+	{
 
 	}
 	else
 	{
-		std::vector <int> tmp_tab = { 0,0,0,0,0 };
-		for (int i = 0;i < 5;i++)
-		{
-			uintptr_t tmp_addr = moduleBase + StockPileOffsets[i];
-			ReadProcessMemory(hProcess, (BYTE*)tmp_addr, &tmp_tab[i], sizeof(tmp_tab[i]), nullptr);
-		}
-		return tmp_tab;
+		uintptr_t tmp_addr = moduleBase + address;
+		int int_new_value = std::stoi(new_value);
+		WriteProcessMemory(hProcess, (BYTE*)tmp_addr, &int_new_value, sizeof(int_new_value), nullptr);
 	}
-
-	
-
 }
+
 
 
 

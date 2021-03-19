@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <string>
 #include <vector>
 #include <Windows.h>
 #include <TlHelp32.h>
@@ -21,9 +22,10 @@ public:
 	
 	std::vector<int> value_return(int category);
 
-	void hack_value(unsigned int tab_addresses[], int category, int new_values[]);
-	void save_to_process(int value, uintptr_t address);
-	std::vector<int> read_from_process(int category);
+	void hack_value(int category, std::string new_values[]);
+	void save_to_process(std::string new_value, unsigned int address);
+
+	void read_from_process(unsigned int Offset, std::vector<int>& arr_of_values);
 
 private:
 	const wchar_t* procName=L"Stronghold.exe";
@@ -31,6 +33,7 @@ private:
 
 	DWORD ProcId;
 
+	int number_of_fields = 8;
 
 	HANDLE hProcess = 0;
 	uintptr_t dynamicPtrBaseAddr;
