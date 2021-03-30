@@ -1,18 +1,22 @@
 #include "cEngine.h"
 
-#define ARMOURY 0
-#define GRANARY 1
-#define STOCKPILE 3
+#define STOCKPILE 0
+#define GRANARY 3 //because its 3 less items in granary and kitchen
+#define ARMOURY 4 //same case as up
 
 
 cEngine::cEngine()
 {
 	ProcId = Get_Process_Id(procName);
-
-	moduleBase = Get_Module_Address(ProcId,modName);
-	dynamicPtrBaseAddr = moduleBase;
+	
 
 	hProcess = OpenProcess(PROCESS_ALL_ACCESS, NULL, ProcId);
+	moduleBase = Get_Module_Address(ProcId, modName);
+
+	moduleBase += 0x11CBFB4;
+	dynamicPtrBaseAddr = Find_DMA_Address(hProcess,moduleBase);
+
+	
 }
 
 cEngine::~cEngine()
@@ -76,19 +80,12 @@ uintptr_t cEngine::Get_Module_Address(DWORD procId, const wchar_t* modName)
 	return modBaseAddr;
 }
 
-std::vector <uintptr_t> cEngine::Find_DMA_Address(HANDLE hProc, uintptr_t ptr, unsigned int offsets[],int size)
+uintptr_t cEngine::Find_DMA_Address(HANDLE hProc, uintptr_t ptr)
 {
-	std::vector <uintptr_t> addr;
 	uintptr_t tmp_addr;
+	ReadProcessMemory(hProc, (BYTE*)ptr, &tmp_addr, sizeof(uintptr_t), 0);
 
-	for (unsigned int i = 0;i < size;++i)
-	{
-		ReadProcessMemory(hProc, (BYTE*)tmp_addr, &tmp_addr, sizeof(uintptr_t), 0);
-
-		addr.push_back(tmp_addr);
-	}
-
-	return addr;
+	return tmp_addr;
 }
 
 std::vector <int> cEngine::value_return(int category)
@@ -121,7 +118,7 @@ std::vector <int> cEngine::value_return(int category)
 
 void cEngine::read_from_process(unsigned int Offset,std::vector<int>& arr_of_values)
 {
-	uintptr_t tmp_addr = moduleBase + Offset;
+	uintptr_t tmp_addr = dynamicPtrBaseAddr+ Offset;
 	int readed_value = 0;
 	ReadProcessMemory(hProcess, (BYTE*)tmp_addr, &readed_value, sizeof(readed_value), nullptr);
 	arr_of_values.push_back(readed_value);
@@ -158,7 +155,7 @@ void cEngine::save_to_process(std::string new_value, unsigned int address)
 	}
 	else
 	{
-		uintptr_t tmp_addr = moduleBase + address;
+		uintptr_t tmp_addr = dynamicPtrBaseAddr + address;
 		int int_new_value = std::stoi(new_value);
 		WriteProcessMemory(hProcess, (BYTE*)tmp_addr, &int_new_value, sizeof(int_new_value), nullptr);
 	}

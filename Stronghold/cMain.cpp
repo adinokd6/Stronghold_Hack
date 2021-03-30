@@ -1,9 +1,12 @@
 #include "cMain.h"
 #include <string>
 
-#define Armoury 0
-#define Granary 1
-#define Stockpile 3
+
+#define Stockpile 0
+#define Granary 3 //because its 3 less items in granary and kitchen
+#define Armoury 4 //same case as up
+
+
 
 wxBEGIN_EVENT_TABLE(cMain, wxFrame)
 EVT_MENU(10001, cMain::OnGranary)
@@ -13,7 +16,7 @@ EVT_BUTTON(10004,cMain::OnHack)
 wxEND_EVENT_TABLE()
 
 
-cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 30), wxSize(325, 570), (wxDEFAULT_FRAME_STYLE & ~wxRESIZE_BORDER & ~wxMAXIMIZE_BOX))
+cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 30), wxSize(500, 700), (wxDEFAULT_FRAME_STYLE & ~wxRESIZE_BORDER & ~wxMAXIMIZE_BOX))
 {
 
 	menuFile = new wxMenu;
@@ -22,7 +25,7 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 
 	wxPNGHandler* handler = new wxPNGHandler;
 	wxImage::AddHandler(handler);
 
-	menuFile->Append(10001, wxT("&Granary"));
+	menuFile->Append(10001, wxT("&Granary and Kitchen"));
 	menuFile->Append(10002, wxT("&Stockpile"));
 	menuFile->Append(10003, wxT("&Armoury"));
 	menuFile->AppendSeparator();
@@ -36,7 +39,7 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 
 	Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(cMain::OnExit));
 	Centre();
 
-	hack_button = new wxButton(this,10004, "HACK",wxPoint(10,10),wxSize(290,50));
+	hack_button = new wxButton(this,10004, "HACK",wxPoint(10,10),wxSize(295,50));
 	typing_fields = new wxTextCtrl*[numbers_of_fields];
 	actual_value = new wxStaticText*[numbers_of_fields];
 
@@ -48,11 +51,11 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 
 
 	for (int i = 0;i < numbers_of_fields;i++)
 	{
-		if (i == 7)
+		if(i>=9)
 		{
-			typing_fields[i] = new wxTextCtrl(this, wxID_ANY, "", wxPoint(120, 87 + i * 54), wxSize(50, 20));
-			actual_value[i] = new wxStaticText(this, wxID_ANY, tmp_string, wxPoint(70, 87 + i * 54), wxSize(50, 20));
-			pictures[i] = new wxStaticBitmap(this, wxID_ANY, wxBitmap("Armoury\\" + std::to_string(i + 1) + ".png", wxBITMAP_TYPE_PNG), wxPoint(12, 70 + i * 54), wxSize(48, 48));
+			typing_fields[i] = new wxTextCtrl(this, wxID_ANY, "", wxPoint(120+250*(i%2), 87 + (i%5) * 54), wxSize(50, 20));
+			actual_value[i] = new wxStaticText(this, wxID_ANY, tmp_string, wxPoint(70+200*(i%2), 87 + (i % 5) * 54), wxSize(50, 20));
+			pictures[i] = new wxStaticBitmap(this, wxID_ANY, wxBitmap("Stockpile\\" + std::to_string(i + 1) + ".png", wxBITMAP_TYPE_PNG), wxPoint(12+190*i%2, 70 + (i % 5) * 54), wxSize(48, 48));
 
 			pictures[i]->Hide();
 			typing_fields[i]->Hide();
@@ -61,9 +64,9 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 
 		else
 		{
 			tmp_string = std::to_string(tmp_values[i]);
-			typing_fields[i] = new wxTextCtrl(this, wxID_ANY, "", wxPoint(120, 87 + i * 54), wxSize(50, 20));
-			actual_value[i] = new wxStaticText(this, wxID_ANY, tmp_string, wxPoint(70, 87 + i * 54), wxSize(50, 20));
-			pictures[i] = new wxStaticBitmap(this, wxID_ANY, wxBitmap("Granary\\" + std::to_string(i + 1) + ".png", wxBITMAP_TYPE_PNG), wxPoint(12, 70 + i * 54), wxSize(48, 48));
+			typing_fields[i] = new wxTextCtrl(this, wxID_ANY, "", wxPoint(120+250*(i%2), 87 + (i % 5) * 54), wxSize(50, 20));
+			actual_value[i] = new wxStaticText(this, wxID_ANY, tmp_string, wxPoint(70+200 * (i % 2), 87 + (i % 5) * 54), wxSize(50, 20));
+			pictures[i] = new wxStaticBitmap(this, wxID_ANY, wxBitmap("Granary\\" + std::to_string(i + 1) + ".png", wxBITMAP_TYPE_PNG), wxPoint(12+190 * (i % 2), 70 + (i % 5) * 54), wxSize(48, 48));
 
 		}
 
@@ -93,7 +96,7 @@ void cMain::OnAbout(wxCommandEvent& event)
 
 void cMain::OnHack(wxCommandEvent& event)
 {
-	std::string arr_of_values[8] = {};
+	std::string arr_of_values[12] = {};
 
 	for(int i = 0;i < numbers_of_fields;i++)
 	{
@@ -114,12 +117,10 @@ void cMain::OnHack(wxCommandEvent& event)
 void cMain::Load_Images(std::string name,int number)
 {
 		pictures[number]->SetBitmap(wxBitmap(name+"\\"+ std::to_string(number + 1)+".png", wxBITMAP_TYPE_PNG));
-		if (name == "Armoury" || name == "Granary")
-		{
-			pictures[number]->Show();
-			typing_fields[number]->Show();
-			actual_value[number]->Show();
-		}
+
+		pictures[number]->Show();
+		typing_fields[number]->Show();
+		actual_value[number]->Show();
 }
 
 void cMain::OnArmoury(wxCommandEvent& event)
@@ -152,18 +153,9 @@ void cMain::OnStockpile(wxCommandEvent& event)
 	{
 		typing_fields[i]->Clear();
 		
-		if (i < 5)
-		{
-			s = std::to_string(tmp_values[i]);
-			Load_Images("Stockpile", i);
-			actual_value[i]->SetLabel(s);
-		}
-		else
-		{
-			typing_fields[i]->Hide();
-			actual_value[i]->Hide();
-			pictures[i]->Hide();
-		}
+		s = std::to_string(tmp_values[i]);
+		Load_Images("Stockpile", i);
+		actual_value[i]->SetLabel(s);
 		
 	}
 }
@@ -177,7 +169,7 @@ void cMain::OnGranary(wxCommandEvent& event)
 
 	for (int i = 0;i < numbers_of_fields;i++)
 	{
-		if (i == 7)
+		if (i>9)
 		{
 			typing_fields[i]->Hide();
 			actual_value[i]->Hide();

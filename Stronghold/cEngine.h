@@ -18,7 +18,7 @@ public:
 
 	DWORD Get_Process_Id(const wchar_t* procName);
 	uintptr_t Get_Module_Address(DWORD procId, const wchar_t* modName);
-	std::vector <uintptr_t> Find_DMA_Address(HANDLE hProc, uintptr_t ptr, unsigned int offsets[],int size);
+	uintptr_t Find_DMA_Address(HANDLE hProc, uintptr_t ptr);
 	
 	std::vector<int> value_return(int category);
 
@@ -28,12 +28,12 @@ public:
 	void read_from_process(unsigned int Offset, std::vector<int>& arr_of_values);
 
 private:
-	const wchar_t* procName=L"Stronghold.exe";
-	const wchar_t* modName=L"Stronghold.exe";
+	const wchar_t* procName=L"Stronghold2.exe";
+	const wchar_t* modName=L"Stronghold2.exe";
 
 	DWORD ProcId;
 
-	int number_of_fields = 8;
+	int number_of_fields = 12;
 
 	HANDLE hProcess = 0;
 	uintptr_t dynamicPtrBaseAddr;
@@ -42,9 +42,9 @@ private:
 	uintptr_t** Armoury_adrr;
 	uintptr_t** Stockpile_adrr;
 
-	std::vector<unsigned int> StockPileOffsets={ 0x0076A618,0x0076A620,0x0076A628,0x0076A62C,0x0076A650 }; // wood,stone,iron,tar,flour
-	std::vector<unsigned int> GranaryOffsets={ 0x0076A638,0x0076A61C,0x0076A644,0x0076A640,0x0076A648,0x0076A634,0x0076A63C }; // roll,hop,apple,meat,beer,wheat,cheese
-	std::vector<unsigned int> ArmouryOffsets={ 0x0076A654,0x0076A65C,0x0076A664,0x0076A658,0x0076A660,0x0076A668,0x0076A66C,0x0076A670 }; // bow,spear,baton,crossbow, halberd, sword, leather armor, iron armor
+	std::vector<unsigned int> StockPileOffsets={ 0xC04,0xC08,0xC0C,0xC24,0xC2C,0xC30,0xC14,0xC10,0xC1C,0xC28,0xC20,0xC18 }; // wood,stone,iron,tar,wool,clothes,flour,wheat,beer,candle,grapes,hops
+	std::vector<unsigned int> GranaryOffsets={ 0xC58,0xC5C,0xC60,0xC64,0xC38,0xC3C,0xC44,0x48,0xC4C }; // apple,roll,cheese,meat,eel,goose,pig,vegetables,wine
+	std::vector<unsigned int> ArmouryOffsets={ }; // bow,spear,baton,crossbow, halberd, sword, leather armor, iron armor
 
 };
 

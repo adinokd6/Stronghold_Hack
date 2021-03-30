@@ -26,12 +26,13 @@ public:
 	void OnHack(wxCommandEvent& event);
 
 	void Load_Images(std::string name,int number);
+	void Update_text(std::string name);
 
 
 	wxDECLARE_EVENT_TABLE();
 private:
 	cEngine hack_Engine;
-	int numbers_of_fields = 8;
+	int numbers_of_fields = 12;
 	int current_value;
 	int actual_category;
 	wxButton *hack_button = nullptr;
