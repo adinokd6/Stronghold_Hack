@@ -18,6 +18,10 @@ wxEND_EVENT_TABLE()
 
 cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 30), wxSize(500, 460), (wxDEFAULT_FRAME_STYLE & ~wxRESIZE_BORDER & ~wxMAXIMIZE_BOX))
 {
+	OnAbout();
+
+	hack_Engine.Chose_version(version);
+	hack_Engine.Chose_offsets();
 
 	menuFile = new wxMenu;
 	menuBar = new wxMenuBar;
@@ -101,10 +105,22 @@ void cMain::OnExit(wxCommandEvent& event)
 	Close(true);
 }
 
-void cMain::OnAbout(wxCommandEvent& event)
+void cMain::OnAbout()
 {
-	wxMessageBox("Created by adinokd6. For help or advice visit my YouTube chanell or github site. ",
-		"Stronghold Fast Hack", wxOK | wxICON_INFORMATION);
+	wxMessageDialog* dial = new wxMessageDialog(NULL,wxT("Is it Steam version? If no it will be avaliable only for 1.4.1"), wxT("Version"),wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
+
+	int ret = dial->ShowModal();
+	dial->Destroy();
+
+	if (ret == wxID_YES) 
+	{
+		version = 1;
+	}
+	else 
+	{
+		version = 2;
+	}
+
 }
 
 void cMain::OnHack(wxCommandEvent& event)
@@ -134,6 +150,14 @@ void cMain::Load_Images(std::string name,int number)
 		pictures[number]->Show();
 		typing_fields[number]->Show();
 		actual_value[number]->Show();
+}
+
+void cMain::Choose_version()
+{
+	wxDialog dlg(nullptr, -1, "Choose version of Stronghold 2", wxDefaultPosition, wxSize(200, 350));
+
+	wxButton* okButton = new wxButton(this, -1, wxT("v1.4.1"),wxDefaultPosition, wxSize(70, 30));
+	wxButton* closeButton = new wxButton(this, -1, wxT("v1.5.0 - Steam version"),wxDefaultPosition, wxSize(70, 30));
 }
 
 void cMain::OnArmoury(wxCommandEvent& event)

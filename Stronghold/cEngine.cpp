@@ -3,24 +3,59 @@
 #define STOCKPILE 0
 #define GRANARY 3 //because its 3 less items in granary and kitchen
 #define ARMOURY 4 //same case as up
+#define STEAM 1
 
 
 cEngine::cEngine()
 {
+
 	ProcId = Get_Process_Id(procName);
 	
 
 	hProcess = OpenProcess(PROCESS_ALL_ACCESS, NULL, ProcId);
 	moduleBase = Get_Module_Address(ProcId, modName);
 
-	moduleBase += 0x11CBFB4;
-	dynamicPtrBaseAddr = Find_DMA_Address(hProcess,moduleBase);
-
 	
 }
 
 cEngine::~cEngine()
 {
+}
+
+void cEngine::Chose_version(int given_version)
+{
+	version = given_version;
+}
+
+void cEngine::Chose_offsets()
+{
+	if (version == STEAM)
+	{
+		unsigned int tmp_stockpile[12] = { 0xf60,0xf64,0xf68,0xf80,0xf88,0xf8c,0xf70,0xf6c,0xf78,0xf84,0xf7c,0xf74 }; // wood,stone,iron,tar,wool,clothes,flour,wheat,beer,candle,grapes,hops
+		unsigned int tmp_granary[9] = { 0xfb4,0xfb8,0xfbc,0xfc0,0xf94,0xf98,0xfa0,0xfa4,0xfa8 }; // apple,roll,cheese,meat,eel,goose,pig,vegetables,wine
+		unsigned int tmp_armoury[8]= { 0xfd4,0xfd8,0xfdc,0xfe0,0xfe4,0xfe8,0xfec,0xff0 }; // bow,crossbow,sword,mace,spear,pike,iron armour,leather armour
+		moduleBase += 0x6E8C60;
+		Copy_to_main_offsets(tmp_stockpile, tmp_granary, tmp_armoury);
+	}
+	else
+	{
+		unsigned int tmp_stockpile[12]= { 0xC04,0xC08,0xC0C,0xC24,0xC2C,0xC30,0xC14,0xC10,0xC1C,0xC28,0xC20,0xC18 }; // wood,stone,iron,tar,wool,clothes,flour,wheat,beer,candle,grapes,hops
+		unsigned int tmp_granary[9] = { 0xC58,0xC5C,0xC60,0xC64,0xC38,0xC3C,0xC44,0x48,0xC4C }; // apple,roll,cheese,meat,eel,goose,pig,vegetables,wine
+		unsigned int tmp_armoury[8] = { 0xC78,0xC7C,0xC80,0xC84,0xC88,0xC8C,0xC90,0xC94 }; // bow,crossbow,sword,mace,spear,pike,iron armour,leather armour
+		moduleBase += 0x11CBFB4;
+		Copy_to_main_offsets(tmp_stockpile, tmp_granary, tmp_armoury);
+	}
+	dynamicPtrBaseAddr = Find_DMA_Address(hProcess, moduleBase);
+
+	
+	
+}
+
+void cEngine::Copy_to_main_offsets(unsigned int to_stockpile[], unsigned int to_granary[], unsigned int to_armoury[])
+{
+	StockPileOffsets.insert(StockPileOffsets.begin(), to_stockpile, to_stockpile + 12);
+	GranaryOffsets.insert(GranaryOffsets.begin(), to_granary, to_granary + 9);
+	ArmouryOffsets.insert(ArmouryOffsets.begin(), to_armoury, to_armoury + 8);
 }
 
 DWORD cEngine::Get_Process_Id(const wchar_t* procName)

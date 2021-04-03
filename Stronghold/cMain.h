@@ -18,7 +18,7 @@ public:
 	cMain();
 	~cMain();
 	void OnExit(wxCommandEvent& event);
-	void OnAbout(wxCommandEvent& event);
+	void OnAbout();
 
 	void OnArmoury(wxCommandEvent& event);
 	void OnStockpile(wxCommandEvent& event);
@@ -27,6 +27,8 @@ public:
 
 	void Load_Images(std::string name,int number);
 	void Update_text(std::string name);
+
+	void Choose_version();
 
 
 	wxDECLARE_EVENT_TABLE();
