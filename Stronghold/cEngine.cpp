@@ -107,7 +107,7 @@ std::vector <int> cEngine::value_return(int category)
 		tmp_offsets = StockPileOffsets;
 	}
 
-	for (int i = 0;i < number_of_fields - category;i++)
+	for (int i = 0;i < tmp_offsets.size();i++)
 	{
 		read_from_process(tmp_offsets[i], tmp_arr_of_values);
 	}

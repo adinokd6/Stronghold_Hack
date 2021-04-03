@@ -31,10 +31,13 @@ public:
 
 	wxDECLARE_EVENT_TABLE();
 private:
-	cEngine hack_Engine;
 	int numbers_of_fields = 12;
 	int current_value;
 	int actual_category;
+	int version; //it can be 1.4.1 or steam 1.5
+
+	cEngine hack_Engine;
+
 	wxButton *hack_button = nullptr;
 	wxTextCtrl **typing_fields;
 	wxStaticText **actual_value;

@@ -16,7 +16,7 @@ EVT_BUTTON(10004,cMain::OnHack)
 wxEND_EVENT_TABLE()
 
 
-cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 30), wxSize(500, 700), (wxDEFAULT_FRAME_STYLE & ~wxRESIZE_BORDER & ~wxMAXIMIZE_BOX))
+cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 30), wxSize(500, 460), (wxDEFAULT_FRAME_STYLE & ~wxRESIZE_BORDER & ~wxMAXIMIZE_BOX))
 {
 
 	menuFile = new wxMenu;
@@ -39,7 +39,7 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 
 	Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(cMain::OnExit));
 	Centre();
 
-	hack_button = new wxButton(this,10004, "HACK",wxPoint(10,10),wxSize(295,50));
+	hack_button = new wxButton(this,10004, "HACK",wxPoint(10,10),wxSize(465,50));
 	typing_fields = new wxTextCtrl*[numbers_of_fields];
 	actual_value = new wxStaticText*[numbers_of_fields];
 
@@ -49,13 +49,26 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 
 
 	actual_category = Granary;
 
+	int column = 0, row = 0;
+
 	for (int i = 0;i < numbers_of_fields;i++)
 	{
+
+		if (i % 2 != 0)
+		{
+			column = 1;
+		}
+		else
+		{
+			row += 1;
+			column = 0;
+		}
+
 		if(i>=9)
 		{
-			typing_fields[i] = new wxTextCtrl(this, wxID_ANY, "", wxPoint(120+250*(i%2), 87 + (i%5) * 54), wxSize(50, 20));
-			actual_value[i] = new wxStaticText(this, wxID_ANY, tmp_string, wxPoint(70+200*(i%2), 87 + (i % 5) * 54), wxSize(50, 20));
-			pictures[i] = new wxStaticBitmap(this, wxID_ANY, wxBitmap("Stockpile\\" + std::to_string(i + 1) + ".png", wxBITMAP_TYPE_PNG), wxPoint(12+190*i%2, 70 + (i % 5) * 54), wxSize(48, 48));
+			typing_fields[i] = new wxTextCtrl(this, wxID_ANY, "", wxPoint(120+200*column, 32 + row * 55), wxSize(50, 20));
+			actual_value[i] = new wxStaticText(this, wxID_ANY, tmp_string, wxPoint(70+200* column, 32 + row * 55), wxSize(50, 20));
+			pictures[i] = new wxStaticBitmap(this, wxID_ANY, wxBitmap("Stockpile\\" + std::to_string(i + 1) + ".png", wxBITMAP_TYPE_PNG), wxPoint(12+190*column, 15 + row * 55), wxSize(48, 48));
 
 			pictures[i]->Hide();
 			typing_fields[i]->Hide();
@@ -64,9 +77,9 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 
 		else
 		{
 			tmp_string = std::to_string(tmp_values[i]);
-			typing_fields[i] = new wxTextCtrl(this, wxID_ANY, "", wxPoint(120+250*(i%2), 87 + (i % 5) * 54), wxSize(50, 20));
-			actual_value[i] = new wxStaticText(this, wxID_ANY, tmp_string, wxPoint(70+200 * (i % 2), 87 + (i % 5) * 54), wxSize(50, 20));
-			pictures[i] = new wxStaticBitmap(this, wxID_ANY, wxBitmap("Granary\\" + std::to_string(i + 1) + ".png", wxBITMAP_TYPE_PNG), wxPoint(12+190 * (i % 2), 70 + (i % 5) * 54), wxSize(48, 48));
+			typing_fields[i] = new wxTextCtrl(this, wxID_ANY, "", wxPoint(120+200* column, 32 + row * 55), wxSize(50, 20));
+			actual_value[i] = new wxStaticText(this, wxID_ANY, tmp_string, wxPoint(70+200 * column, 32 + row * 55), wxSize(50, 20));
+			pictures[i] = new wxStaticBitmap(this, wxID_ANY, wxBitmap("Granary\\" + std::to_string(i + 1) + ".png", wxBITMAP_TYPE_PNG), wxPoint(12+190 *column, 15 + row * 55), wxSize(48, 48));
 
 		}
 
@@ -132,10 +145,27 @@ void cMain::OnArmoury(wxCommandEvent& event)
 
 	for (int i = 0;i < numbers_of_fields;i++)
 	{
+		if (i > 7)
+		{
+			typing_fields[i]->Hide();
+			actual_value[i]->Hide();
+			pictures[i]->Hide();
+		}
+		else
+		{
+			s = std::to_string(tmp_values[i]);
+
+			typing_fields[i]->Clear();
+			actual_value[i]->SetLabel(s);
+
+			Load_Images("Armoury", i);
+		}
+
+	}
+	for (int i = 0;i < numbers_of_fields-Armoury;i++)
+	{
 		s=std::to_string(tmp_values[i]);
-
 		actual_value[i]->SetLabel(s);
-
 		Load_Images("Armoury", i);
 
 	}
@@ -169,7 +199,7 @@ void cMain::OnGranary(wxCommandEvent& event)
 
 	for (int i = 0;i < numbers_of_fields;i++)
 	{
-		if (i>9)
+		if (i>8)
 		{
 			typing_fields[i]->Hide();
 			actual_value[i]->Hide();
