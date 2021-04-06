@@ -32,7 +32,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/github_username/repo_name">
+  <a href="https://github.com/adinokd6/Stronghold_Hack">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -41,14 +41,14 @@
   <p align="center">
     project_description
     <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/adinokd6/Stronghold_Hack"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
+    <a href="https://github.com/adinokd6/Stronghold_Hack">View Demo</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Report Bug</a>
+    <a href="https://github.com/adinokd6/Stronghold_Hack/issues">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Request Feature</a>
+    <a href="https://github.com/adinokd6/Stronghold_Hack/issues">Request Feature</a>
   </p>
 </p>
 
@@ -113,16 +113,14 @@ This is an example of how to list things you need to use the software and how to
   npm install npm@latest -g
   ```
 
-### Installation
+### Installation - WORK ONLY FOR WINDOWS!
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/adinokd6/Stronghold_Hack.git
    ```
-2. Install NPM packages
-   ```sh
-   npm install
-   ```
+2. Build
+3. Run exe file.
 
 
 
@@ -184,15 +182,16 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo.svg?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo.svg?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/adinokd6/repo.svg?style=for-the-badge
+[contributors-url]: https://github.com/adinokd6/repo/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/adinokd6/repo.svg?style=for-the-badge
+[forks-url]: https://github.com/adinokd6/repo/network/members
+[stars-shield]: https://img.shields.io/github/stars/adinokd6/repo.svg?style=for-the-badge
+[stars-url]: https://github.com/adinokd6/repo/stargazers
+[issues-shield]: https://img.shields.io/github/issues/adinokd6/repo.svg?style=for-the-badge
+[issues-url]: https://github.com/adinokd6/repo/issues
+[license-shield]: https://img.shields.io/github/license/adinokd6/repo.svg?style=for-the-badge
+[license-url]: https://github.com/adinokd6/repo/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/github_username
+[linkedin-url]: https://linkedin.com/in/adinokd6
+[product-screenshot]: images/screenshot.png
