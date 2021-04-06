@@ -20,9 +20,7 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-<p align="center">
-[![Product Name Screen Shot][product-screenshot]]
-</p>
+
 
 
 <!-- PROJECT LOGO -->
@@ -87,6 +85,7 @@ To get a local copy up and running follow these simple steps.
 <!-- USAGE EXAMPLES -->
 ## Usage
 Program can be used to add sources, armour etc. during your single-player game in Stronghold 2. It can be used either on 1.4.1 or 1.5.0 Steam version of the game. First you need to choose version of your game. In next step type the value you want to have in game and if everything is ready click HACK button. Well! You've done it. If everything gone well you can enjoy the increased condition of your castle.
+[![Product Name Screen Shot][product-screenshot]]
 
 
 
