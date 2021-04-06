@@ -20,7 +20,9 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
+<p align="center">
 [![Product Name Screen Shot][product-screenshot]]
+</p>
 
 
 <!-- PROJECT LOGO -->
