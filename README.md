@@ -38,20 +38,6 @@
 
   <h3 align="center">Stronghold 2 Resources Hack</h3>
 
-  <p align="center">
-    project_description
-    <br />
-    <a href="https://github.com/adinokd6/Stronghold_Hack"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/adinokd6/Stronghold_Hack">View Demo</a>
-    ·
-    <a href="https://github.com/adinokd6/Stronghold_Hack/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/adinokd6/Stronghold_Hack/issues">Request Feature</a>
-  </p>
-</p>
-
 
 
 <!-- TABLE OF CONTENTS -->
