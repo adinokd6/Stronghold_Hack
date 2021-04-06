@@ -13,7 +13,7 @@ class cEngine
 {
 public:
 
-	cEngine();
+	cEngine(int given_version);
 	~cEngine();
 
 	DWORD Get_Process_Id(const wchar_t* procName);

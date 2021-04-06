@@ -18,15 +18,17 @@ public:
 	cMain();
 	~cMain();
 	void OnExit(wxCommandEvent& event);
-	void OnAbout();
+	void Create_Window();
+	void Initialize_Fields();
 
 	void OnArmoury(wxCommandEvent& event);
 	void OnStockpile(wxCommandEvent& event);
 	void OnGranary(wxCommandEvent& event);
 	void OnHack(wxCommandEvent& event);
 
-	void Load_Images(std::string name,int number);
-	void Update_text(std::string name);
+	void Load_Field(std::string name,int number);
+	void Hide_Field(int number);
+	void Update_Label(int number, int value, std::string category);
 
 	void Choose_version();
 
