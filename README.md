@@ -39,16 +39,8 @@
   <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
   <ol>
     <li>
-    <a href="#built-with">Built With</a>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
+    <a href="#Dependencies">Dependencies</a>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
@@ -58,27 +50,11 @@
 
 
 
-### Built With
+### Dependencies
 
 * [Visual studio and C++](https://visualstudio.microsoft.com/pl/)
 * [WxWidgets](https://www.wxwidgets.org/)
 
-
-
-<!-- GETTING STARTED -->
-## Getting Started
-
-To get a local copy up and running follow these simple steps.
-
-
-### Installation - WORK ONLY FOR WINDOWS!
-
-1. Clone the repo
-   ```sh
-   git clone https://github.com/adinokd6/Stronghold_Hack.git
-   ```
-2. Build
-3. Run exe file.
 
 
 
@@ -88,14 +64,6 @@ Program can be used to add sources, armour etc. during your single-player game i
 
 [![Product Name Screen Shot][product-screenshot]]
 
-
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-See the [open issues](https://github.com/github_username/repo_name/issues) for a list of proposed features (and known issues).
 
 
 
@@ -116,6 +84,7 @@ Contributions are what make the open source community such an amazing place to b
 ## Contact
 
 Your Name - Adrian
+
 Email - adinokd66@gmail.com
 
 Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
