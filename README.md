@@ -69,11 +69,10 @@ Program can be used to add sources, armour etc. during your single-player game i
 <!-- CONTACT -->
 ## Contact
 
-Your Name - Adrian
+My Name - Adrian
 
 Email - adinokd6@gmail.com
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
 
 
 
