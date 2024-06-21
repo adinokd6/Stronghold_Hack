@@ -44,9 +44,6 @@ void cEngine::Chose_offsets()
 		Copy_to_main_offsets(tmp_stockpile, tmp_granary, tmp_armoury);
 	}
 	dynamicPtrBaseAddr = Find_DMA_Address(hProcess, moduleBase);
-
-	
-	
 }
 
 void cEngine::Copy_to_main_offsets(unsigned int to_stockpile[], unsigned int to_granary[], unsigned int to_armoury[])
@@ -121,9 +118,9 @@ uintptr_t cEngine::Find_DMA_Address(HANDLE hProc, uintptr_t ptr)
 	return tmp_addr;
 }
 
-std::vector <int> cEngine::value_return(int category)
+std::vector <std::string> cEngine::value_return(int category)
 {
-	std::vector <int> tmp_arr_of_values;
+	std::vector <std::string> tmp_arr_of_values;
 
 	std::vector<unsigned int> tmp_offsets;
 
@@ -149,12 +146,12 @@ std::vector <int> cEngine::value_return(int category)
 }
 
 
-void cEngine::read_from_process(unsigned int Offset,std::vector<int>& arr_of_values)
+void cEngine::read_from_process(unsigned int Offset,std::vector<std::string>& arr_of_values)
 {
 	uintptr_t tmp_addr = dynamicPtrBaseAddr+ Offset;
 	int readed_value = 0;
 	ReadProcessMemory(hProcess, (BYTE*)tmp_addr, &readed_value, sizeof(readed_value), nullptr);
-	arr_of_values.push_back(readed_value);
+	arr_of_values.push_back(std::to_string(readed_value));
 }
 
 void cEngine::hack_value(int category, std::string new_values[])

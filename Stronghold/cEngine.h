@@ -20,12 +20,12 @@ public:
 	uintptr_t Get_Module_Address(DWORD procId, const wchar_t* modName);
 	uintptr_t Find_DMA_Address(HANDLE hProc, uintptr_t ptr);
 	
-	std::vector<int> value_return(int category);
+	std::vector<std::string> value_return(int category);
 
 	void hack_value(int category, std::string new_values[]);
 	void save_to_process(std::string new_value, unsigned int address);
 
-	void read_from_process(unsigned int Offset, std::vector<int>& arr_of_values);
+	void read_from_process(unsigned int Offset, std::vector<std::string>& arr_of_values);
 	void Chose_version(int given_version);
 	void Chose_offsets();
 	void Copy_to_main_offsets(unsigned int to_stockpile[], unsigned int to_granary[], unsigned int to_armoury[]);

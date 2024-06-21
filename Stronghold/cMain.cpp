@@ -1,57 +1,38 @@
 #include "cMain.h"
 #include <string>
-
-
-#define Stockpile 0
-#define Granary 3 //because its 3 less items in granary and kitchen
-#define Armoury 4 //same case as up
-
-
+#include <memory>
+#include "Enums.h"
 
 wxBEGIN_EVENT_TABLE(cMain, wxFrame)
 EVT_MENU(10001, cMain::OnGranary)
-EVT_MENU(10002,cMain::OnStockpile)
-EVT_MENU(10003,cMain::OnArmoury)
-EVT_BUTTON(10004,cMain::OnHack)
+EVT_MENU(10002, cMain::OnStockpile)
+EVT_MENU(10003, cMain::OnArmoury)
+EVT_BUTTON(10004, cMain::OnHack)
 wxEND_EVENT_TABLE()
 
 
-cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 30), wxSize(500, 460), (wxDEFAULT_FRAME_STYLE & ~wxRESIZE_BORDER & ~wxMAXIMIZE_BOX)), hack_Engine(version)
+cMain::cMain()
+	: wxFrame(nullptr, wxID_ANY, "Stronghold Fast Hack", wxPoint(30, 30), wxSize(500, 460), (wxDEFAULT_FRAME_STYLE & ~wxRESIZE_BORDER & ~wxMAXIMIZE_BOX)), hackEngine(version)
 {
-	Choose_version();
-
-	Create_Window();
-
-	Initialize_Fields();
-
+	ChooseVersion();
+	CreateWindow();
+	InitializeFields();
 }
 
 cMain::~cMain()
 {
-	delete[]typing_fields;
-	delete[]actual_value;
-	delete[]pictures;
+
 }
 
-void cMain::Choose_version()
+void cMain::ChooseVersion()
 {
 	wxMessageDialog* dial = new wxMessageDialog(NULL, wxT("Is it Steam version? If no it will be avaliable only for 1.4.1"), wxT("Version"), wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
 
 	int ret = dial->ShowModal();
-	dial->Destroy();
-
-	if (ret == wxID_YES)
-	{
-		version = 1;
-	}
-	else
-	{
-		version = 2;
-	}
-
+	version = (ret == wxID_YES) ? Version::Steam : Version::NonSteam;
 }
 
-void cMain::Create_Window()
+void cMain::CreateWindow()
 {
 	menuFile = new wxMenu;
 	menuBar = new wxMenuBar;
@@ -73,78 +54,65 @@ void cMain::Create_Window()
 	Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(cMain::OnExit));
 	Centre();
 
-	hack_button = new wxButton(this, 10004, "HACK", wxPoint(10, 10), wxSize(465, 50));
-	typing_fields = new wxTextCtrl * [numbers_of_fields];
-	actual_value = new wxStaticText * [numbers_of_fields];
+	hackButton = new wxButton(this, 10004, "HACK", wxPoint(10, 10), wxSize(465, 50));
+	typingFields = new wxTextCtrl * [numberOfFields];
+	actualValue = new wxStaticText * [numberOfFields];
 }
 
-void cMain::Initialize_Fields()
+void cMain::InitializeFields()
 {
-	actual_category = Granary;
-
-	std::string tmp_string;
-
-	std::vector<int> tmp_values = hack_Engine.value_return(Granary);
+	std::vector<std::string> fieldValues = GetActualCategoryValues(Category::Granary);
 
 	int column = 0, row = 0;
 
-	for (int i = 0;i < numbers_of_fields;i++)
+	for (int i = 0;i < numberOfFields;i++)
 	{
-
-		if (i % 2 != 0)
-		{
-			column = 1;
-		}
-		else
-		{
-			row += 1;
-			column = 0;
-		}
+		column = i % 2 != 0 ? 1 : 0;
+		row += i % 2 != 0 ? 0 : 1;
 
 		if (i >= 9)
 		{
-			typing_fields[i] = new wxTextCtrl(this, wxID_ANY, "", wxPoint(120 + 200 * column, 32 + row * 55), wxSize(50, 20));
-			actual_value[i] = new wxStaticText(this, wxID_ANY, tmp_string, wxPoint(70 + 200 * column, 32 + row * 55), wxSize(50, 20));
-			pictures[i] = new wxStaticBitmap(this, wxID_ANY, wxBitmap("Stockpile\\" + std::to_string(i + 1) + ".png", wxBITMAP_TYPE_PNG), wxPoint(12 + 190 * column, 15 + row * 55), wxSize(48, 48));
-
-			Hide_Field(i);
+			SetFieldValue(column, row, i, fieldValues[i], Category::Stockpile);
+			HideField(i);
 		}
 		else
 		{
-			tmp_string = std::to_string(tmp_values[i]);
-			typing_fields[i] = new wxTextCtrl(this, wxID_ANY, "", wxPoint(120 + 200 * column, 32 + row * 55), wxSize(50, 20));
-			actual_value[i] = new wxStaticText(this, wxID_ANY, tmp_string, wxPoint(70 + 200 * column, 32 + row * 55), wxSize(50, 20));
-			pictures[i] = new wxStaticBitmap(this, wxID_ANY, wxBitmap("Granary\\" + std::to_string(i + 1) + ".png", wxBITMAP_TYPE_PNG), wxPoint(12 + 190 * column, 15 + row * 55), wxSize(48, 48));
-
+			SetFieldValue(column, row, i, fieldValues[i], Category::Granary);
 		}
-
 	}
 }
 
-void cMain::Load_Field(std::string name, int number)
+void cMain::SetFieldValue(int column, int row, int fieldIndex, std::string fieldValue, Category category)
 {
-	pictures[number]->SetBitmap(wxBitmap(name + "\\" + std::to_string(number + 1) + ".png", wxBITMAP_TYPE_PNG));
-
-	pictures[number]->Show();
-	typing_fields[number]->Show();
-	actual_value[number]->Show();
+	auto imagePath = GetImagePath(fieldIndex, category);
+	typingFields[fieldIndex] = new wxTextCtrl(this, wxID_ANY, "", wxPoint(120 + 200 * column, 32 + row * 55), wxSize(50, 20));
+	actualValue[fieldIndex] = new wxStaticText(this, wxID_ANY, fieldValue, wxPoint(70 + 200 * column, 32 + row * 55), wxSize(50, 20));
+	pictures[fieldIndex] = new wxStaticBitmap(this, wxID_ANY, wxBitmap(imagePath, wxBITMAP_TYPE_PNG), wxPoint(12 + 190 * column, 15 + row * 55), wxSize(48, 48));
 }
 
-void cMain::Hide_Field(int number)
+void cMain::LoadField(Category categoryName, int imageNumber)
+{
+	std::string imagePath = GetImagePath(imageNumber, categoryName);
+	pictures[imageNumber]->SetBitmap(wxBitmap(imagePath, wxBITMAP_TYPE_PNG));
+
+	pictures[imageNumber]->Show();
+	typingFields[imageNumber]->Show();
+	actualValue[imageNumber]->Show();
+}
+
+void cMain::HideField(int number)
 {
 	pictures[number]->Hide();
-	typing_fields[number]->Hide();
-	actual_value[number]->Hide();
+	typingFields[number]->Hide();
+	actualValue[number]->Hide();
 }
 
-void cMain::Update_Label(int number,int value,std::string category)
+void cMain::UpdateLabel(int number, std::string value, Category category)
 {
-	typing_fields[number]->Clear();
+	typingFields[number]->Clear();
 
-	std::string tmp_string = std::to_string(value);
-
-	Load_Field(category, number);
-	actual_value[number]->SetLabel(tmp_string);
+	LoadField(category, number);
+	actualValue[number]->SetLabel(value);
 }
 
 void cMain::OnExit(wxCommandEvent& event)
@@ -156,73 +124,90 @@ void cMain::OnHack(wxCommandEvent& event)
 {
 	std::string arr_of_values[12] = {};
 
-	for(int i = 0;i < numbers_of_fields;i++)
+	for (int i = 0;i < numberOfFields;i++)
 	{
-		if ( (typing_fields[i]->IsEmpty()) == true)
+		if ((typingFields[i]->IsEmpty()) == true)
 		{
 			arr_of_values[i] = "null";
 		}
 		else
 		{
-			arr_of_values[i] = typing_fields[i]->GetValue();
+			arr_of_values[i] = typingFields[i]->GetValue();
 		}
 	}
 
-	hack_Engine.hack_value(actual_category, arr_of_values);
-
+	hackEngine.hack_value(actualCategory, arr_of_values);
 }
 
 void cMain::OnArmoury(wxCommandEvent& event)
 {
-	actual_category = Armoury;
+	std::vector<std::string> fieldValue = GetActualCategoryValues(Category::Armoury);
 
-	std::vector<int> tmp_values = hack_Engine.value_return(Armoury);
-
-	for (int i = 0;i < numbers_of_fields;i++)
+	for (int i = 0;i < numberOfFields;i++)
 	{
 		if (i > 7)
 		{
-			Hide_Field(i);
+			HideField(i);
 		}
 		else
 		{
-			Update_Label(i, tmp_values[i], "Armoury");
+			UpdateLabel(i, fieldValue[i], Category::Armoury);
 		}
-
 	}
-
 }
 
 void cMain::OnStockpile(wxCommandEvent& event)
 {
-	actual_category = Stockpile;
+	std::vector<std::string> fieldValue = GetActualCategoryValues(Category::Stockpile);
 
-	std::vector<int> tmp_values = hack_Engine.value_return(Stockpile);
-
-	for (int i = 0;i < numbers_of_fields;i++)
+	for (int i = 0;i < numberOfFields;i++)
 	{
-		Update_Label(i, tmp_values[i], "Stockpile");
+		UpdateLabel(i, fieldValue[i], Category::Stockpile);
 	}
 }
 
 void cMain::OnGranary(wxCommandEvent& event)
 {
-	actual_category = Granary;
+	std::vector<std::string> fieldValue = GetActualCategoryValues(Category::Granary);
 
-	std::vector<int> tmp_values = hack_Engine.value_return(Granary);
-
-	for (int i = 0;i < numbers_of_fields;i++)
+	for (int i = 0;i < numberOfFields;i++)
 	{
-		if (i>8)
+		if (i > 8)
 		{
-			Hide_Field(i);
+			HideField(i);
 		}
 		else
 		{
-			Update_Label(i, tmp_values[i], "Granary");
+			UpdateLabel(i, fieldValue[i], Category::Granary);
 		}
-
 	}
 }
 
+std::vector<std::string> cMain::GetActualCategoryValues(Category category)
+{
+	SetCategory(category);
+	return hackEngine.value_return(category);
+}
 
+std::string cMain::GetImagePath(int imageNumber, Category category)
+{
+	std::string imagePath;
+	switch (category) {
+	case Category::Armoury:
+		imagePath += "Armoury\\" + std::to_string(imageNumber + 1) + ".png";
+		break;
+	case Category::Stockpile:
+		imagePath += "Stockpile\\" + std::to_string(imageNumber + 1) + ".png";
+		break;
+	case Category::Granary:
+		imagePath += "Granary\\" + std::to_string(imageNumber + 1) + ".png";
+		break;
+	}
+
+	return imagePath;
+}
+
+void cMain::SetCategory(Category category)
+{
+	actualCategory = category;
+}
